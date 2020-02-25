@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using E_Teens_Camp.MovieTheater.Database;
 using E_Teens_Camp.MovieTheater.Models;
@@ -57,7 +55,7 @@ namespace E_Teens_Camp.MovieTheater.Controllers
                 Date = DateTime.Parse(model.Date) + TimeSpan.Parse(model.Time),
                 Description = model.Description,
                 Duration = TimeSpan.Parse(model.Duration),
-                Genre = model.Genre
+                Genre = model.Genre ?? string.Empty
             };
             using (var db = new Context())
             {
