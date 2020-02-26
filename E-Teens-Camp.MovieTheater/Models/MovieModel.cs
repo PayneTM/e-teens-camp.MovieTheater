@@ -13,7 +13,7 @@ namespace E_Teens_Camp.MovieTheater.Models
         [JsonProperty("release_year")]
         public string ReleaseYear { get; set; }
 
-        [JsonProperty("youtybe_url")]
+        [JsonProperty("youtube_url")]
         public string YoutubeUrl { get; set; }
 
         [JsonProperty("age")]

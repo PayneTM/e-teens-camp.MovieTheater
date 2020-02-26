@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using E_Teens_Camp.MovieTheater.Database;
 using E_Teens_Camp.MovieTheater.Models;
@@ -35,16 +35,16 @@ namespace E_Teens_Camp.MovieTheater.Controllers
         }
 
         // GET: api/Movie/5
-        public MovieEntity Get(int id)
+        public async Task<MovieEntity> Get(int id)
         {
             using (var db = new Context())
             {
-                return db.Movies.FirstOrDefault(x=>x.Id == id);
+                return await db.Movies.FindAsync(id);
             }
         }
 
         // POST: api/Movie
-        public void Post([FromBody]MovieModel model)
+        public async Task Post([FromBody]MovieModel model)
         {
             var entity = new MovieEntity
             {
@@ -60,7 +60,7 @@ namespace E_Teens_Camp.MovieTheater.Controllers
             using (var db = new Context())
             {
                 db.Movies.Add(entity);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
 
@@ -70,8 +70,25 @@ namespace E_Teens_Camp.MovieTheater.Controllers
         }
 
         // DELETE: api/Movie/5
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
+            using (var db = new Context())
+            {
+                var toDelete = await db.Movies.FindAsync(id);
+                if (toDelete == null) return;
+                db.Movies.Remove(toDelete);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        // DELETE: api/Movie/
+        public async Task DeleteAll()
+        {
+            using (var db = new Context())
+            {
+                db.Movies.RemoveRange(db.Movies);
+                await db.SaveChangesAsync();
+            }
         }
     }
 }
