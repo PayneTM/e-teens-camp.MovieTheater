@@ -17,29 +17,20 @@ namespace E_Teens_Camp.MovieTheater.Controllers
             {
                 foreach (var movie in db.Movies)
                 {
-                    result.Add(new MovieModel {
-                        Age = movie.Age.ToString(),
-                        Date = movie.Date.Date.ToString("yyyy-MM-dd"),
-                        Description = movie.Description,
-                        Duration = $"{movie.Duration.Hours}:{movie.Duration.Minutes}",
-                        Genre = movie.Genre.ToString(),
-                        Id = movie.Id,
-                        Name = movie.Name,
-                        ReleaseYear = movie.ReleaseYear.ToString(),
-                        Time = movie.Date.TimeOfDay.ToString(@"hh\:mm"),
-                        YoutubeUrl = movie.YoutubeUrl
-                    });
+                    result.Add(CreateMovieModelFromDbEntity(movie));
                 }
             }
             return result;
         }
 
         // GET: api/Movie/5
-        public async Task<MovieEntity> Get(int id)
+        public async Task<MovieModel> Get(int id)
         {
             using (var db = new Context())
             {
-                return await db.Movies.FindAsync(id);
+                var movie = await db.Movies.FindAsync(id);
+                if (movie == null) return null;
+                return CreateMovieModelFromDbEntity(movie);
             }
         }
 
@@ -89,6 +80,24 @@ namespace E_Teens_Camp.MovieTheater.Controllers
                 db.Movies.RemoveRange(db.Movies);
                 await db.SaveChangesAsync();
             }
+        }
+
+        private MovieModel CreateMovieModelFromDbEntity(MovieEntity entity)
+        {
+            if (entity == null) return null;
+            return new MovieModel
+            {
+                Age = entity.Age.ToString(),
+                Date = entity.Date.Date.ToString("yyyy-MM-dd"),
+                Description = entity.Description,
+                Duration = $"{entity.Duration.Hours}:{entity.Duration.Minutes}",
+                Genre = entity.Genre.ToString(),
+                Id = entity.Id,
+                Name = entity.Name,
+                ReleaseYear = entity.ReleaseYear.ToString(),
+                Time = entity.Date.TimeOfDay.ToString(@"hh\:mm"),
+                YoutubeUrl = entity.YoutubeUrl
+            };
         }
     }
 }
